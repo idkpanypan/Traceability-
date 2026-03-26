@@ -5,105 +5,115 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3D Printed Case Traceability</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-  body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #0f172a, #2563eb);
-    color: #e0e7ff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-  }
+body {
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background: linear-gradient(135deg,#0f172a,#2563eb);
+  color:#e0e7ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:20px;
+}
 
-  .container {
-    background: #1e293bdd;
-    border-radius: 25px;
-    padding: 40px 30px;
-    max-width: 450px;
-    width: 100%;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-    position: relative;
-    text-align: center;
-  }
+.container {
+  background:#1e293bdd;
+  border-radius:25px;
+  padding:40px 30px;
+  max-width:450px;
+  width:100%;
+  box-shadow:0 20px 40px rgba(0,0,0,0.6);
+  position:relative;
+  text-align:center;
+}
 
-  h1 { font-weight: 700; margin-bottom: 30px; font-size: 2rem; }
+h1 { font-weight:700; margin-bottom:30px; font-size:2rem; }
 
-  .buttons {
-    margin-bottom: 25px;
-  }
+.buttons { margin-bottom:25px; }
+button {
+  background:#2563eb;
+  color:#f9fafb;
+  border:none;
+  border-radius:12px;
+  padding:12px 20px;
+  margin:0 10px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+}
+button:hover { background:#3b82f6; }
 
-  button {
-    background: #2563eb;
-    color: #f9fafb;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 20px;
-    margin: 0 10px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  button:hover { background: #3b82f6; }
-
-  .field { margin-bottom: 18px; text-align: left; }
-  .label { font-weight: 600; font-size: 0.85rem; color: #60a5fa; text-transform: uppercase; margin-bottom: 4px; }
-  .value { font-size: 1.3rem; font-weight: 500; }
-  .status { font-weight: 700; color: #22c55e; font-size: 1.4rem; margin-top: 10px; text-align: center; }
-  .notes { margin-top: 20px; font-style: italic; color: #94a3b8; text-align: center; }
+.field { margin-bottom:12px; text-align:left; }
+.label { font-weight:600; font-size:0.85rem; color:#60a5fa; text-transform:uppercase; margin-bottom:2px; }
+.value { font-size:1.2rem; font-weight:500; }
+.status { font-weight:700; color:#22c55e; font-size:1.3rem; margin-top:8px; text-align:center; }
+.notes { margin-top:15px; font-style:italic; color:#94a3b8; text-align:center; }
+.qr-code { display:flex; justify-content:center; margin-top:20px; }
+img { width:130px; height:130px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.3); }
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>3D Printed Case Traceability</h1>
-
-    <div class="buttons">
-      <button onclick="showCase('top')">Top Case</button>
-      <button onclick="showCase('bottom')">Bottom Case</button>
-    </div>
-
-    <div id="caseInfo">
-      <!-- Info will appear here -->
-    </div>
+<div class="container">
+  <h1>3D Printed Case Traceability</h1>
+  <div class="buttons">
+    <button onclick="showCase('top')">Top Case</button>
+    <button onclick="showCase('bottom')">Bottom Case</button>
   </div>
+  <div id="caseInfo"></div>
+</div>
 
 <script>
-  const cases = {
-    top: {
-      batch: "0007",
-      printer: "Bambu Lab P1S",
-      material: "PLA White",
-      date: "26 March 2026",
-      status: "Passed",
-      notes: "Top case, 7th print overall"
-    },
-    bottom: {
-      batch: "0008",
-      printer: "Bambu Lab P1S",
-      material: "PLA White",
-      date: "26 March 2026",
-      status: "Passed",
-      notes: "Bottom case, 8th print overall"
-    }
-  };
-
-  function showCase(type) {
-    const info = cases[type];
-    document.getElementById('caseInfo').innerHTML = `
-      <div class="field"><div class="label">Batch</div><div class="value">${info.batch}</div></div>
-      <div class="field"><div class="label">Printer</div><div class="value">${info.printer}</div></div>
-      <div class="field"><div class="label">Material</div><div class="value">${info.material}</div></div>
-      <div class="field"><div class="label">Date</div><div class="value">${info.date}</div></div>
-      <div class="field"><div class="label">Status</div><div class="value status">${info.status}</div></div>
-      <div class="notes">${info.notes}</div>
-    `;
+const cases = {
+  top: {
+    batch:"0007",
+    printNumber:"4",
+    printer:"Bambu Lab P1S",
+    material:"PLA White",
+    date:"24 Feb 2026",
+    duration:"3h",
+    layerHeight:"0.12 mm",
+    infill:"35%",
+    status:"Passed",
+    notes:"Top case, 4th print overall",
+    qr:"https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://idkpanypan.github.io/Traceability-/index.html"
+  },
+  bottom: {
+    batch:"0008",
+    printNumber:"7",
+    printer:"Bambu Lab P1S",
+    material:"PLA White",
+    date:"11 Mar 2026",
+    duration:"5h",
+    layerHeight:"0.12 mm",
+    infill:"35%",
+    status:"Passed",
+    notes:"Bottom case, 7th print overall",
+    qr:"https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://idkpanypan.github.io/Traceability-/index.html"
   }
+};
 
-  // Show top case info by default
-  showCase('top');
+function showCase(type){
+  const info = cases[type];
+  document.getElementById('caseInfo').innerHTML = `
+    <div class="field"><div class="label">Batch</div><div class="value">${info.batch}</div></div>
+    <div class="field"><div class="label">Print Number</div><div class="value">${info.printNumber}</div></div>
+    <div class="field"><div class="label">Printer</div><div class="value">${info.printer}</div></div>
+    <div class="field"><div class="label">Material</div><div class="value">${info.material}</div></div>
+    <div class="field"><div class="label">Date</div><div class="value">${info.date}</div></div>
+    <div class="field"><div class="label">Duration</div><div class="value">${info.duration}</div></div>
+    <div class="field"><div class="label">Layer Height</div><div class="value">${info.layerHeight}</div></div>
+    <div class="field"><div class="label">Infill</div><div class="value">${info.infill}</div></div>
+    <div class="field"><div class="label">Status</div><div class="value status">${info.status}</div></div>
+    <div class="notes">${info.notes}</div>
+    <div class="qr-code"><img src="${info.qr}" alt="QR code for ${type} case"></div>
+  `;
+}
+
+// Show top case by default
+showCase('top');
 </script>
 </body>
 </html>
