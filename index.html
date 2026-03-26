@@ -28,7 +28,7 @@ body {
   box-shadow:0 25px 50px rgba(0,0,0,0.8);
   text-align:center;
   transition: all 0.5s ease-in-out;
-  background:#111f1a; /* darker container background */
+  background:#111f1a; /* dark container */
 }
 
 h1 {
@@ -40,7 +40,6 @@ h1 {
   -webkit-text-fill-color: transparent;
   animation: shimmer 3s infinite;
 }
-
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -62,9 +61,16 @@ button {
   cursor:pointer;
   transition:0.3s;
   box-shadow:0 4px 15px rgba(0,0,0,0.3);
+  color:#ffffff; /* White text */
 }
-button:hover { transform: translateY(-2px); }
-button.active { box-shadow:0 6px 25px rgba(255,255,255,0.6); }
+button:hover { 
+  transform: translateY(-2px); 
+  filter: brightness(1.1); 
+}
+button.active { 
+  box-shadow:0 6px 25px rgba(255,255,255,0.8); 
+  color:#ffffff; 
+}
 
 .field {
   margin-bottom:12px;
@@ -77,10 +83,9 @@ button.active { box-shadow:0 6px 25px rgba(255,255,255,0.6); }
 }
 .field.show { opacity:1; transform: translateY(0); }
 .label { font-weight:600; font-size:0.85rem; text-transform:uppercase; margin-bottom:2px; }
-.value { font-size:1.2rem; font-weight:500; color:#f1f5f9; } /* brighter text for visibility */
+.value { font-size:1.2rem; font-weight:500; color:#f1f5f9; }
 .status { font-weight:700; font-size:1.3rem; margin-top:8px; text-align:center; text-shadow:0 0 10px;}
 .notes { margin-top:15px; font-style:italic; text-align:center; text-shadow:0 0 5px;}
-
 </style>
 </head>
 <body>
@@ -99,7 +104,7 @@ const cases = {
   top: {
     themeColor: "#16a34a", // green
     buttonColor: "#22c55e",
-    fieldBg: "rgba(22,163,74,0.25)", // darker field background
+    fieldBg: "rgba(22,163,74,0.25)",
     batch:"0007",
     printNumber:"4",
     printer:"Bambu Lab P1S",
@@ -107,14 +112,14 @@ const cases = {
     date:"24 Feb 2026",
     duration:"3h",
     layerHeight:"0.12 mm",
-    infill:"30%",
+    infill:"35%",
     status:"Passed",
     notes:"Top case, 4th print overall"
   },
   bottom: {
     themeColor: "#2563eb", // blue
     buttonColor: "#3b82f6",
-    fieldBg: "rgba(37,99,235,0.2)", // darker field background
+    fieldBg: "rgba(37,99,235,0.2)",
     batch:"0008",
     printNumber:"7",
     printer:"Bambu Lab P1S",
@@ -139,9 +144,6 @@ function showCase(type){
   document.getElementById('topBtn').style.background = cases.top.buttonColor;
   document.getElementById('bottomBtn').style.background = cases.bottom.buttonColor;
   
-  // Update container background
-  document.getElementById('container').style.background = "#111f1a"; // keep dark container
-  
   // Update select text color
   document.getElementById('selectText').style.color = info.themeColor;
 
@@ -165,7 +167,7 @@ function showCase(type){
   fields.forEach((f,i)=>setTimeout(()=>f.classList.add('show'), i*100));
 }
 
-// Show bottom case by default
+// Show top case by default
 showCase('bottom');
 </script>
 </body>
