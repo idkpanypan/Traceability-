@@ -107,7 +107,7 @@ const cases = {
     date:"24 Feb 2026",
     duration:"3h",
     layerHeight:"0.12 mm",
-    infill:"35%",
+    infill:"30%",
     status:"Passed",
     notes:"Top case, 4th print overall"
   },
@@ -165,8 +165,8 @@ function showCase(type){
   fields.forEach((f,i)=>setTimeout(()=>f.classList.add('show'), i*100));
 }
 
-// Show top case by default
-showCase('top');
+// Show bottom case by default
+showCase('bottom');
 </script>
 </body>
 </html>
