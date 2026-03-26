@@ -15,19 +15,19 @@ body {
   display:flex;
   justify-content:center;
   align-items:center;
-  min-height:80vh; /* shorter height */
+  min-height:80vh;
   padding:20px;
+  transition: background 0.5s ease;
 }
 
 .container {
-  background:#1e293bdd;
   border-radius:30px;
   padding:30px 25px;
   max-width:450px;
   width:100%;
   box-shadow:0 25px 50px rgba(0,0,0,0.7);
   text-align:center;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 
 h1 {
@@ -49,13 +49,10 @@ h1 {
   font-size:1rem;
   font-weight:500;
   margin-bottom:15px;
-  color:#93c5fd;
 }
 
 .buttons { margin-bottom:25px; }
 button {
-  background:#2563eb;
-  color:#f9fafb;
   border:none;
   border-radius:15px;
   padding:12px 22px;
@@ -65,51 +62,33 @@ button {
   transition:0.3s;
   box-shadow:0 4px 15px rgba(0,0,0,0.3);
 }
-button:hover {
-  background:#3b82f6;
-  box-shadow:0 6px 25px rgba(96,165,250,0.6);
-  transform: translateY(-2px);
-}
+button:hover { transform: translateY(-2px); }
+button.active { box-shadow:0 6px 25px rgba(255,255,255,0.6); }
 
 .field {
   margin-bottom:12px;
   text-align:left;
-  transition: all 0.3s ease;
+  opacity:0;
+  transform: translateY(10px);
+  transition: all 0.5s ease;
+  padding:8px 12px;
+  border-radius:10px;
 }
-.label {
-  font-weight:600;
-  font-size:0.85rem;
-  color:#60a5fa;
-  text-transform:uppercase;
-  margin-bottom:2px;
-}
-.value {
-  font-size:1.2rem;
-  font-weight:500;
-  color:#e0e7ff;
-}
-.status {
-  font-weight:700;
-  color:#22c55e;
-  font-size:1.3rem;
-  margin-top:8px;
-  text-align:center;
-}
-.notes {
-  margin-top:15px;
-  font-style:italic;
-  color:#94a3b8;
-  text-align:center;
-}
+.field.show { opacity:1; transform: translateY(0); }
+.label { font-weight:600; font-size:0.85rem; text-transform:uppercase; margin-bottom:2px; }
+.value { font-size:1.2rem; font-weight:500; }
+.status { font-weight:700; font-size:1.3rem; margin-top:8px; text-align:center; text-shadow:0 0 8px;}
+.notes { margin-top:15px; font-style:italic; text-align:center; text-shadow:0 0 5px;}
+
 </style>
 </head>
 <body>
-<div class="container">
+<div class="container" id="container">
   <h1>3D Printed Case Traceability</h1>
-  <div class="select-text">Please select a case to view:</div>
+  <div class="select-text" id="selectText">Please select a case to view:</div>
   <div class="buttons">
-    <button onclick="showCase('top')">Top Case</button>
-    <button onclick="showCase('bottom')">Bottom Case</button>
+    <button id="topBtn" onclick="showCase('top')">Top Case</button>
+    <button id="bottomBtn" onclick="showCase('bottom')">Bottom Case</button>
   </div>
   <div id="caseInfo"></div>
 </div>
@@ -117,6 +96,9 @@ button:hover {
 <script>
 const cases = {
   top: {
+    themeColor: "#16a34a", // green
+    buttonColor: "#22c55e",
+    fieldBg: "rgba(34,197,94,0.1)",
     batch:"0007",
     printNumber:"4",
     printer:"Bambu Lab P1S",
@@ -124,11 +106,14 @@ const cases = {
     date:"24 Feb 2026",
     duration:"3h",
     layerHeight:"0.12 mm",
-    infill:"30%",
+    infill:"35%",
     status:"Passed",
     notes:"Top case, 4th print overall"
   },
   bottom: {
+    themeColor: "#2563eb", // blue
+    buttonColor: "#3b82f6",
+    fieldBg: "rgba(59,130,246,0.05)",
     batch:"0008",
     printNumber:"7",
     printer:"Bambu Lab P1S",
@@ -145,23 +130,42 @@ const cases = {
 
 function showCase(type){
   const info = cases[type];
-  document.getElementById('caseInfo').innerHTML = `
-    <div class="field"><div class="label">Batch</div><div class="value">${info.batch}</div></div>
-    <div class="field"><div class="label">Print Number</div><div class="value">${info.printNumber}</div></div>
-    <div class="field"><div class="label">Printer</div><div class="value">${info.printer}</div></div>
-    <div class="field"><div class="label">Material</div><div class="value">${info.material}</div></div>
-    <div class="field"><div class="label">Date</div><div class="value">${info.date}</div></div>
-    <div class="field"><div class="label">Duration</div><div class="value">${info.duration}</div></div>
-    <div class="field"><div class="label">Layer Height</div><div class="value">${info.layerHeight}</div></div>
-    <div class="field"><div class="label">Infill</div><div class="value">${info.infill}</div></div>
-    ${info.differenceMeasurement ? `<div class="field"><div class="label">Difference Measurement</div><div class="value">${info.differenceMeasurement}</div></div>` : ''}
-    <div class="field"><div class="label">Status</div><div class="value status">${info.status}</div></div>
-    <div class="notes">${info.notes}</div>
+  
+  // Update button active states and colors
+  document.getElementById('topBtn').classList.remove('active');
+  document.getElementById('bottomBtn').classList.remove('active');
+  document.getElementById(type+'Btn').classList.add('active');
+  document.getElementById('topBtn').style.background = cases.top.buttonColor;
+  document.getElementById('bottomBtn').style.background = cases.bottom.buttonColor;
+  
+  // Update container background
+  document.getElementById('container').style.background = info.themeColor + "22"; // semi-transparent background
+  
+  // Update select text color
+  document.getElementById('selectText').style.color = info.themeColor;
+
+  const container = document.getElementById('caseInfo');
+  container.innerHTML = `
+    <div class="field" style="background:${info.fieldBg}"><div class="label">Batch</div><div class="value">${info.batch}</div></div>
+    <div class="field" style="background:${info.fieldBg}"><div class="label">Print Number</div><div class="value">${info.printNumber}</div></div>
+    <div class="field" style="background:${info.fieldBg}"><div class="label">Printer</div><div class="value">${info.printer}</div></div>
+    <div class="field" style="background:${info.fieldBg}"><div class="label">Material</div><div class="value">${info.material}</div></div>
+    <div class="field" style="background:${info.fieldBg}"><div class="label">Date</div><div class="value">${info.date}</div></div>
+    <div class="field" style="background:${info.fieldBg}"><div class="label">Duration</div><div class="value">${info.duration}</div></div>
+    <div class="field" style="background:${info.fieldBg}"><div class="label">Layer Height</div><div class="value">${info.layerHeight}</div></div>
+    <div class="field" style="background:${info.fieldBg}"><div class="label">Infill</div><div class="value">${info.infill}</div></div>
+    ${info.differenceMeasurement ? `<div class="field" style="background:${info.fieldBg}"><div class="label">Difference Measurement</div><div class="value">${info.differenceMeasurement}</div></div>` : ''}
+    <div class="field" style="background:${info.fieldBg}"><div class="label">Status</div><div class="value status">${info.status}</div></div>
+    <div class="notes" style="color:${info.themeColor}">${info.notes}</div>
   `;
+  
+  // Animate fields
+  const fields = container.querySelectorAll('.field');
+  fields.forEach((f,i)=>setTimeout(()=>f.classList.add('show'), i*100));
 }
 
-// Show top case info by default
-showCase('top');
+// Show bottom case by default
+showCase('bottom');
 </script>
 </body>
 </html>
