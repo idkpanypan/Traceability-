@@ -26,7 +26,6 @@ body {
   max-width:450px;
   width:100%;
   box-shadow:0 20px 40px rgba(0,0,0,0.6);
-  position:relative;
   text-align:center;
 }
 
@@ -51,8 +50,6 @@ button:hover { background:#3b82f6; }
 .value { font-size:1.2rem; font-weight:500; }
 .status { font-weight:700; color:#22c55e; font-size:1.3rem; margin-top:8px; text-align:center; }
 .notes { margin-top:15px; font-style:italic; color:#94a3b8; text-align:center; }
-.qr-code { display:flex; justify-content:center; margin-top:20px; }
-img { width:130px; height:130px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.3); }
 </style>
 </head>
 <body>
@@ -77,8 +74,7 @@ const cases = {
     layerHeight:"0.12 mm",
     infill:"35%",
     status:"Passed",
-    notes:"Top case, 4th print overall",
-    qr:"https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://idkpanypan.github.io/Traceability-/index.html"
+    notes:"Top case, 4th print overall"
   },
   bottom: {
     batch:"0008",
@@ -91,7 +87,7 @@ const cases = {
     infill:"35%",
     status:"Passed",
     notes:"Bottom case, 7th print overall",
-    qr:"https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://idkpanypan.github.io/Traceability-/index.html"
+    differenceMeasurement:"1.83 mm"
   }
 };
 
@@ -106,13 +102,13 @@ function showCase(type){
     <div class="field"><div class="label">Duration</div><div class="value">${info.duration}</div></div>
     <div class="field"><div class="label">Layer Height</div><div class="value">${info.layerHeight}</div></div>
     <div class="field"><div class="label">Infill</div><div class="value">${info.infill}</div></div>
+    ${info.differenceMeasurement ? `<div class="field"><div class="label">Difference Measurement</div><div class="value">${info.differenceMeasurement}</div></div>` : ''}
     <div class="field"><div class="label">Status</div><div class="value status">${info.status}</div></div>
     <div class="notes">${info.notes}</div>
-    <div class="qr-code"><img src="${info.qr}" alt="QR code for ${type} case"></div>
   `;
 }
 
-// Show top case by default
+// Show top case info by default
 showCase('top');
 </script>
 </body>
